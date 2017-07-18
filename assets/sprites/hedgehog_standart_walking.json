@@ -1,0 +1,76 @@
+{"frames": [
+
+{
+	"filename": "hedgehog_walk_1.png",
+	"frame": {"x":0,"y":0,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_2.png",
+	"frame": {"x":0,"y":128,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_3.png",
+	"frame": {"x":0,"y":256,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_4.png",
+	"frame": {"x":0,"y":384,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_5.png",
+	"frame": {"x":0,"y":512,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_6.png",
+	"frame": {"x":0,"y":640,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_7.png",
+	"frame": {"x":0,"y":768,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+},
+{
+	"filename": "hedgehog_walk_8.png",
+	"frame": {"x":0,"y":896,"w":64,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":128},
+	"sourceSize": {"w":64,"h":128}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "hedgehog_standart_walking.png",
+	"format": "RGBA8888",
+	"size": {"w":64,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:0671bdcfd3ac851d20c966973e1fd31d:ddfcd32e5773d3dd8dc9cb1c5dc63e14:f85a9172cf7129b45ddcf41446d38ca0$"
+}
+}
