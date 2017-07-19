@@ -7,9 +7,9 @@ var controls = {};
 
 var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
-
 function preload(){
 	game.load.image('box', 'assets/sprites/box.png');
+	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
 	game.load.image('platform_mossy', 'assets/sprites/platform_mossy.png');
 	game.load.image('boxshread', 'assets/sprites/boxshread.png');
@@ -25,11 +25,13 @@ function preload(){
 }
 
 function create(){
+
 	controls.cursors = game.input.keyboard.createCursorKeys();
 	controls.spin = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 	
 	var stageData = game.cache.getJSON('world_1');
 	game.world.setBounds(0,0,stageData.size.width,stageData.size.height);
+	game.world.flowerCount = 0;
 	
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	
@@ -43,6 +45,9 @@ function create(){
 		var c = Phaser.Color.interpolateColor(0xffee82, 0xffbb47, 30, i);
 		bmd.rect(0,3*game.world.height / 4 + game.world.height/2 /30 * i,game.world.width, game.world.height/2 /30, Phaser.Color.getWebRGB(c));
 	}
+	var textStyle = { font: "24px Arial", fill: "#000000", align: "left" };
+	game.world.flowerText = game.add.text(15, 15, "Flowers: " +game.world.flowerCount, textStyle);
+	game.world.flowerText.fixedToCamera = true;
 	
 	/* COSMETIC BACKGROUND */
 	stageData.objects.cosmetic.background.forEach((c) => {
@@ -76,19 +81,43 @@ function create(){
 	/* FLOWERS & BOXES */
 	flowers = game.add.group();
 	flowers.enableBody = true;
+	flowers.createOne = function(x, y){
+		var f = flowers.create(x, y, 'flower');
+		f.anchor.setTo(0.5);
+		f.body.originalPosition = {};
+		f.body.originalPosition.y = y;
+		f.body.originalPosition.x = x;
+		if(game.rnd.frac() < 0.5)
+			f.body.position.y += -200 + game.rnd.frac() * 100;
+		else
+			f.body.position.y += 200 - game.rnd.frac() * 100;
+	}
 	
 	boxes = game.add.group();
 	
 	basicBoxes = game.add.group();
 	basicBoxes.enableBody = true;
 	stageData.objects.boxes.basic.items.forEach((b) => {
-		console.log(b);
-		var box = basicBoxes.create(b.position.x, b.position.y, stageData.objects.boxes.basic.image)
+		var box = basicBoxes.create(b.position.x, b.position.y, stageData.objects.boxes.basic.image);
 		box.body.immovable = true;
+		box.createContent = function(x, y){
+				flowers.createOne(x + (-15 + game.rnd.frac() * 30), y)
+		};
 	});
-	
 	boxes.add(basicBoxes);
 	
+	supriseBoxes = game.add.group();
+	supriseBoxes.enableBody = true;
+	stageData.objects.boxes.suprise.items.forEach((b) => {
+		var box = supriseBoxes.create(b.position.x, b.position.y, stageData.objects.boxes.suprise.image);
+		box.body.immovable = true;
+		box.createContent = function(x, y) {
+			for(var i = 0; i < 6; i++){
+				flowers.createOne(x + (-15 + game.rnd.frac() * 30), y);
+			}
+		}
+	})
+	boxes.add(supriseBoxes);
 	
 	boxes.children.forEach((group) => {
 		group.children.forEach((b) => {
@@ -101,12 +130,7 @@ function create(){
 				b.emitter.makeParticles('boxshread');
 				b.emitter.gravity = 200;
 				b.emitter.start(true, 500, 100, 10)
-				var f = flowers.create(b.centerX, b.centerY, 'flower');
-				f.anchor.setTo(0.5);
-				f.body.originalPosition = {};
-				f.body.originalPosition.y = f.body.position.y;
-				f.body.originalPosition.x = f.body.position.x;
-				f.body.position.y -= 200;
+				b.createContent(b.centerX, b.centerY);
 			}
 		});
 	});
@@ -194,6 +218,8 @@ function update(){
 	flowers.forEach((f) => {
 		if(game.physics.arcade.overlap(player, f)){
 			f.destroy();
+			game.world.flowerCount += 1;
+			game.world.flowerText.setText("Flowers: "+game.world.flowerCount);
 			return;
 		}
 		f.body.acceleration.y = 5*(f.body.originalPosition.y - f.body.position.y);
@@ -211,19 +237,20 @@ function update(){
 	
 	
 	//figure out animations
+	//flip right way
+	if(player.facingRight && player.body.velocity.x < 0){
+		player.scale.x *= -1;	
+		player.facingRight = false;
+	} else if(!player.facingRight && player.body.velocity.x > 0){
+		player.scale.x *= -1;
+		player.facingRight = true;
+	}
+
 	if(player.body.touching.down){
 		if(controls.cursors.left.isDown && !controls.cursors.right.isDown){
 			player.animations.play('walk');
-			if(player.facingRight){
-				player.scale.x *= -1;
-				player.facingRight = false;
-			}
 		} else if(controls.cursors.right.isDown && !controls.cursors.left.isDown){
 			player.animations.play('walk');
-			if(!player.facingRight){
-				player.scale.x *= -1;
-				player.facingRight = true;
-			}
 		} else {
 			player.animations.stop();
 		}
@@ -238,6 +265,8 @@ function render(){
 	// solids.forEach((s) => {
 		// game.debug.body(s);
 	// })
+	game.debug.geom(game.world.flowerText.textBounds);
+	console.log(game.world.flowerText);
 }
 
 function isOnTopOf(o1, o2){
