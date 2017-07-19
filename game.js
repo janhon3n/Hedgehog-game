@@ -8,6 +8,7 @@ var controls = {};
 var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
 function preload(){
+	game.load.image('background', 'assets/sprites/background.png');
 	game.load.image('box', 'assets/sprites/box.png');
 	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
@@ -50,6 +51,15 @@ function create(){
 	game.world.flowerText.fixedToCamera = true;
 	
 	/* COSMETIC BACKGROUND */
+	
+	stageData.objects.cosmetic.backgroundFar.forEach((c) => {
+		var s = game.add.sprite(c.position.x, c.position.y, c.image);
+		if(c.scale){
+			s.scale.setTo(c.scale.x, c.scale.y);
+		}
+		s.fixedToCamera = true;
+	})
+	
 	stageData.objects.cosmetic.background.forEach((c) => {
 		var s = game.add.sprite(c.position.x, c.position.y, c.image);
 		if(c.scale){
