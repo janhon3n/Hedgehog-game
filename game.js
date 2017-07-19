@@ -16,6 +16,8 @@ function preload(){
 	game.load.image('flower', 'assets/sprites/flower.png');
 	game.load.image('grass_ground_1', 'assets/sprites/grass_ground_1.png');
 	game.load.image('birch_tree_trunk', 'assets/sprites/birch_tree_trunk.png');
+	game.load.image('mushroom_tatti_1', 'assets/sprites/mushroom_tatti_1.png');
+	game.load.image('mushroom_tatti_2', 'assets/sprites/mushroom_tatti_2.png');
 	
 	game.load.spritesheet('hedgehog_standart_walking', 'assets/sprites/hedgehog_standart_walking.png', 64, 128, 8);
 	game.load.json('world_1', 'worlds/world_1.json');
