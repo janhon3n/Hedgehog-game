@@ -81,20 +81,15 @@ function create(){
 
 	/* SOLIDS / POLOYGONS */
 	solids = game.add.group();
-	solids.enableBody = true;
 	stageData.objects.solids.forEach((group) => {
 		group.items.forEach((s) => {
 			var img = group.image;
 			if(!img)
 				img = s.image;
-			var solid = solids.create(s.position.x, s.position.y, img);
 			var body = group.body;
 			if(!body)
 				body = s.body;
-			if(body){
-				solid.body.setSize(body.width, body.height, body.x, body.y);
-			}
-			solid.body.immovable = true;
+			solids.add(new Solid(game, s.position, img, body));
 		});
 	});
 		
@@ -157,8 +152,7 @@ function create(){
 	});
 	
 	/* PLAYER */
-	player = new Player(game, stageData.objects.player.position.x, stageData.objects.player.position.y);
-	console.log(player)
+	player = new Player(game, stageData.objects.player.position);
 	
 	/* COSMETIC FOREGROUND */
 	stageData.objects.cosmetic.foreground.forEach((c) => {
@@ -170,49 +164,24 @@ function create(){
 }
 
 function update(){
+	game.physics.arcade.collide(player, solids, (p, s) => {
+		p.hitSolid(s);
+	});
+	
 	boxes.forEach((g) => {
 		game.physics.arcade.collide(player, g, (p, b) => {
+				console.log(p);
 			if(isOnTopOf(p, b)){
+				p.hitBox(b, true);
 				b.explode();
-				player.body.velocity.y = -750;
-				if(controls.cursors.up.isDown)
-					player.body.velocity.y = -900;
 			} else if(isUnder(p, b)){
 				b.explode();
-				player.body.velocity.y = 100;
+				p.hitBox(b, false);
 			}
 		});
 	});
 
-	game.physics.arcade.collide(player, solids, (p, s) => {
-	});
 	
-	player.body.acceleration.x = 0;
-	
-	if(controls.cursors.left.isDown && !controls.cursors.right.isDown){
-		player.body.acceleration.x = -6000;
-	} else if(controls.cursors.right.isDown && !controls.cursors.left.isDown){
-		player.body.acceleration.x = 6000;
-	}
-	
-	// vertical movement
-	if(player.canJump && controls.cursors.up.isDown){
-		player.body.velocity.y = -800;
-	}
-	
-	if(controls.spin.isDown){
-		if(!player.spinInProgress){
-			player.spinInProgress = true;
-			player.loadTexture('hedgehog');
-			setTimeout(() => {
-				player.spinInProgress = false;
-				player.loadTexture('player');
-			}, 500)
-		}
-	}
-	
-	
-	player.body.velocity.x = player.body.velocity.x / 1.4;
 	
 	flowers.forEach((f) => {
 		if(game.physics.arcade.overlap(player, f)){
@@ -270,7 +239,6 @@ function render(){
 		// game.debug.body(s);
 	// })
 	game.debug.geom(game.world.flowerText.textBounds);
-	console.log(game.world.flowerText);
 }
 
 function isOnTopOf(o1, o2){

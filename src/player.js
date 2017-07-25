@@ -1,8 +1,7 @@
-var Player = function(game, x, y){
-	console.log("CREATING NEW PLAYER");
-	Phaser.Sprite.call(this, game, x, y, 'hedgehog_standart_walking');
+var Player = function(game, position){
+	Phaser.Sprite.call(this, game, position.x, position.y, 'hedgehog_standart_walking');
 	this.facingRight = true;
-	this.hitBox = false;
+	this.onSolid = false;
 	this.spinInProgress = false;
 	
 	this.anchor.setTo(0.5);
@@ -32,13 +31,27 @@ Player.prototype.update = function(){
 	}
 		
 	// vertical movement
-	if(this.body.touching.down && controls.cursors.up.isDown){
+	if(this.onSolid && controls.cursors.up.isDown){
 		this.body.velocity.y = -800;
 	}
+	this.body.velocity.x = this.body.velocity.x / 1.4;
 	
-	//TODO 
+	this.onSolid = false;
 }
 
-Player.prototype.collideWithBox = function(){
-	this.hitBox = true;
+Player.prototype.hitSolid = function(obj){
+	if(obj instanceof Solid) {
+		this.onSolid = true;
+	}
+}
+
+Player.prototype.hitBox = function(obj, playerOnTop){
+	if(playerOnTop){
+		if(controls.cursors.up.isDown)
+			this.body.velocity.y = -950;
+		else
+			this.body.velocity.y = -700;
+	} else {
+		this.body.velocity.y = 100;
+	}
 }
