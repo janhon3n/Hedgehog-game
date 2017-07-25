@@ -1,14 +1,16 @@
-var player;
 var boxes;
+var player;
 var solids;
 var flowers;
 var background;
 var controls = {};
+var backgroundMiddle;
 
 var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
 function preload(){
 	game.load.image('background', 'assets/sprites/background.png');
+	game.load.image('background_forest', 'assets/sprites/background_forest.png');
 	game.load.image('box', 'assets/sprites/box.png');
 	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
@@ -59,6 +61,15 @@ function create(){
 		}
 		s.fixedToCamera = true;
 	})
+	
+	backgroundMiddle = game.add.group();
+	stageData.objects.cosmetic.backgroundMiddle.forEach((c) => {
+		var s = backgroundMiddle.create(c.position.x, c.position.y, c.image);
+		if(c.scale){
+			s.scale.setTo(c.scale.x, c.scale.y);
+		}
+	})
+	
 	
 	stageData.objects.cosmetic.background.forEach((c) => {
 		var s = game.add.sprite(c.position.x, c.position.y, c.image);
@@ -145,26 +156,9 @@ function create(){
 		});
 	});
 	
-	
-	
-	
-		/* PLAYER */
-	player = game.add.sprite(stageData.objects.player.position.x,stageData.objects.player.position.y,'hedgehog_standart_walking', 0);
-	player.anchor.setTo(0.5);
-	player.animations.add('walk', null, 15);
-	player.facingRight = true;
-	game.physics.arcade.enable(player);
-		
-	player.body.bounce.y = 0.1;
-	player.body.gravity.y = 1700;
-	player.offsetX = 100;
-	player.body.setSize(48,80,8,32);
-	
-	//own properties
-	player.canJump = false;
-	player.spinInProgress = false;
-	game.camera.follow(player, Phaser.Camera.FOLLOW_PLATFORMER);
-	
+	/* PLAYER */
+	player = new Player(game, stageData.objects.player.position.x, stageData.objects.player.position.y);
+	console.log(player)
 	
 	/* COSMETIC FOREGROUND */
 	stageData.objects.cosmetic.foreground.forEach((c) => {
@@ -176,11 +170,8 @@ function create(){
 }
 
 function update(){
-	player.canJump = false;
-	var hitbox = false;
 	boxes.forEach((g) => {
 		game.physics.arcade.collide(player, g, (p, b) => {
-			hitbox = true;
 			if(isOnTopOf(p, b)){
 				b.explode();
 				player.body.velocity.y = -750;
@@ -193,11 +184,9 @@ function update(){
 		});
 	});
 
-	var hitSolid = game.physics.arcade.collide(player, solids, (p, s) => {
-		if(isOnTopOf(p, s)){
-			p.canJump = true;
-		}
+	game.physics.arcade.collide(player, solids, (p, s) => {
 	});
+	
 	player.body.acceleration.x = 0;
 	
 	if(controls.cursors.left.isDown && !controls.cursors.right.isDown){
@@ -267,6 +256,11 @@ function update(){
 	} else {
 		player.animations.stop();
 	}
+	
+	// UPDATE BACKGROUND
+	backgroundMiddle.forEach((s) => {
+		s.position.x = game.camera.x * 3 / 4;
+	});
 }
 
 function render(){
