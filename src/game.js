@@ -1,10 +1,3 @@
-var boxes;
-var player;
-var solids;
-var flowers;
-var background;
-var controls = {};
-var backgroundMiddle;
 
 var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
@@ -21,10 +14,12 @@ function preload(){
 	game.load.image('birch_tree_trunk', 'assets/sprites/birch_tree_trunk.png');
 	game.load.image('mushroom_tatti_1', 'assets/sprites/mushroom_tatti_1.png');
 	game.load.image('mushroom_tatti_2', 'assets/sprites/mushroom_tatti_2.png');
+	game.load.image('flower_1', 'assets/sprites/flower_1.png');
+
+	game.load.audio('flower', 'assets/audio/flower.mp3');
 	
 	game.load.spritesheet('hedgehog_standart_walking', 'assets/sprites/hedgehog_standart_walking.png', 64, 128, 8);
 	game.load.json('world_1', 'worlds/world_1.json');
-
 }
 
 function create(){
@@ -98,15 +93,7 @@ function create(){
 	flowers = game.add.group();
 	flowers.enableBody = true;
 	flowers.createOne = function(x, y){
-		var f = flowers.create(x, y, 'flower');
-		f.anchor.setTo(0.5);
-		f.body.originalPosition = {};
-		f.body.originalPosition.y = y;
-		f.body.originalPosition.x = x;
-		if(game.rnd.frac() < 0.5)
-			f.body.position.y += -200 + game.rnd.frac() * 100;
-		else
-			f.body.position.y += 200 - game.rnd.frac() * 100;
+		var f = flowers.add(new Flower(game, {x: x, y: y}, 'flower'));
 	}
 	
 	boxes = game.add.group();
@@ -181,28 +168,6 @@ function update(){
 		});
 	});
 
-	
-	
-	flowers.forEach((f) => {
-		if(game.physics.arcade.overlap(player, f)){
-			f.destroy();
-			game.world.flowerCount += 1;
-			game.world.flowerText.setText("Flowers: "+game.world.flowerCount);
-			return;
-		}
-		f.body.acceleration.y = 5*(f.body.originalPosition.y - f.body.position.y);
-		if(f.body.velocity.x != 0) f.body.velocity.x = 0;
-		if(f.body.velocity.y > 20) f.body.velocity.y  = 20;
-		if(f.body.velocity.y < -20) f.body.velocity.y  = -20;
-		if(game.physics.arcade.distanceBetween(f, player) < 100){
-			var distance = Phaser.Point.subtract(player.body.position, f.body.position);
-			var normalized = Phaser.Point.normalize(distance);
-			f.body.velocity = normalized.multiply(300,300);
-			f.body.originalPosition.y = f.body.position.y;
-			f.body.originalPosition.x = f.body.position.x;
-		} 
-	});
-	
 	
 	//figure out animations
 	//flip right way

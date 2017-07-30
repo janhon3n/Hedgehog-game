@@ -56,6 +56,35 @@
 						"x":0.8,
 						"y":0.8
 					}
+				},
+				{
+					"image": "flower_1",
+					"position": {
+						"x":1980,
+						"y":300
+					}
+				},
+				{
+					"image": "mushroom_tatti_1",
+					"position": {
+						"x":1680,
+						"y":510
+					},
+					"scale": {
+						"x":0.15,
+						"y":0.15
+					}
+				},
+				{
+					"image": "mushroom_tatti_2",
+					"position": {
+						"x":1820,
+						"y":515
+					},
+					"scale": {
+						"x":0.15,
+						"y":0.15
+					}
 				}
 			]
 
