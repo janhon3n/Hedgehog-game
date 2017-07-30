@@ -4,6 +4,7 @@ var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create:
 function preload(){
 	game.load.image('background', 'assets/sprites/background.png');
 	game.load.image('background_forest', 'assets/sprites/background_forest.png');
+	game.load.image('background_grass', 'assets/sprites/background_grass.png');
 	game.load.image('box', 'assets/sprites/box.png');
 	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
@@ -48,21 +49,14 @@ function create(){
 	game.world.flowerText.fixedToCamera = true;
 	
 	/* COSMETIC BACKGROUND */
-	
+	backgroundFar = game.add.group();
 	stageData.objects.cosmetic.backgroundFar.forEach((c) => {
-		var s = game.add.sprite(c.position.x, c.position.y, c.image);
-		if(c.scale){
-			s.scale.setTo(c.scale.x, c.scale.y);
-		}
-		s.fixedToCamera = true;
-	})
-	
-	backgroundMiddle = game.add.group();
-	stageData.objects.cosmetic.backgroundMiddle.forEach((c) => {
-		var s = backgroundMiddle.create(c.position.x, c.position.y, c.image);
-		if(c.scale){
-			s.scale.setTo(c.scale.x, c.scale.y);
-		}
+		var lastRight = c.position.x;
+		do {
+			var b = new BackgroundFar(game, {x: lastRight, y:c.position.y}, c.image, c.scale, c.speed);
+			backgroundFar.add(b);
+			lastRight = b.right - 1;
+		} while(b.right < game.world.width && c.repeat);
 	})
 	
 	
@@ -190,11 +184,6 @@ function update(){
 	} else {
 		player.animations.stop();
 	}
-	
-	// UPDATE BACKGROUND
-	backgroundMiddle.forEach((s) => {
-		s.position.x = game.camera.x * 3 / 4;
-	});
 }
 
 function render(){

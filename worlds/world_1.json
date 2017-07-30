@@ -16,10 +16,9 @@
 					"scale": {
 						"x": 1,
 						"y": 1
-					}
-				}
-			],
-			"backgroundMiddle": [
+					},
+					"speed":1
+				},
 				{
 					"image": "background_forest",
 					"position": {
@@ -29,15 +28,30 @@
 					"scale": {
 						"x": 1,
 						"y": 1
-					}
+					},
+					"speed":0.75
+				},
+				{
+					"image": "background_grass",
+					"position": {
+						"x": 0,
+						"y": 0
+					},
+					"scale": {
+						"x": 1,
+						"y": 1
+					},
+					"speed": 0.1,
+					"repeat": true
+					
 				}
-			],	
+			],
 			"background": [
 				{
 					"image": "birch_tree_trunk",
 					"position": {
 						"x": 2100,
-						"y": -100
+						"y": 0
 					},
 					"scale": {
 						"x": 0.8,
@@ -50,7 +64,7 @@
 					"image": "birch_tree_trunk",
 					"position": {
 						"x":2500,
-						"y": -80
+						"y": 20
 					},
 					"scale": {
 						"x":0.8,
@@ -61,14 +75,14 @@
 					"image": "flower_1",
 					"position": {
 						"x":1980,
-						"y":300
+						"y":400
 					}
 				},
 				{
 					"image": "mushroom_tatti_1",
 					"position": {
 						"x":1680,
-						"y":510
+						"y":610
 					},
 					"scale": {
 						"x":0.15,
@@ -79,7 +93,7 @@
 					"image": "mushroom_tatti_2",
 					"position": {
 						"x":1820,
-						"y":515
+						"y":615
 					},
 					"scale": {
 						"x":0.15,
@@ -102,7 +116,7 @@
 						},
 						"position": {
 							"x": 1500,
-							"y": 500
+							"y": 600
 						}
 					},{
 						"image": "grass_ground_1",
@@ -114,7 +128,7 @@
 						},
 						"position": {
 							"x": 3400,
-							"y": 500
+							"y": 600
 						}
 					}
 				]
