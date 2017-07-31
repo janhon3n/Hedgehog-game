@@ -2,9 +2,9 @@
 var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
 function preload(){
-	game.load.image('background', 'assets/sprites/background.png');
-	game.load.image('background_forest', 'assets/sprites/background_forest.png');
-	game.load.image('background_grass', 'assets/sprites/background_grass.png');
+	game.load.tilemap('background', 'assets/sprites/background.png');
+	game.load.tilemap('background_forest', 'assets/sprites/background_forest.png');
+	game.load.tilemap('background_grass', 'assets/sprites/background_grass.png');
 	game.load.image('box', 'assets/sprites/box.png');
 	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
@@ -20,7 +20,7 @@ function preload(){
 	game.load.audio('flower', 'assets/audio/flower.mp3');
 	
 	game.load.spritesheet('hedgehog_standart_walking', 'assets/sprites/hedgehog_standart_walking.png', 64, 128, 8);
-	game.load.json('world_1', 'worlds/world_1.json');
+	game.load.json('grass_1', 'worlds/world_1.json');
 }
 
 function create(){
@@ -28,7 +28,7 @@ function create(){
 	controls.cursors = game.input.keyboard.createCursorKeys();
 	controls.spin = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 	
-	var stageData = game.cache.getJSON('world_1');
+	var stageData = game.cache.getJSON('grass_1');
 	game.world.setBounds(0,0,stageData.size.width,stageData.size.height);
 	game.world.flowerCount = 0;
 	
@@ -48,7 +48,22 @@ function create(){
 	game.world.flowerText = game.add.text(15, 15, "Flowers: " +game.world.flowerCount, textStyle);
 	game.world.flowerText.fixedToCamera = true;
 	
-	/* COSMETIC BACKGROUND */
+	/* CREATE OBJECTS FROM TILESET */
+	stageData.layers.forEach((layer) => {
+		var i = 0;
+		for(var row = layer.y; row < layer.height; row++) {
+			for(var col = layer.x; col < layer.width; col++) {
+				stageData.objectIds.forEach((o) => {
+					if(o.id === layer.data[i]){
+						
+					}
+					
+				});
+			}
+		}
+	})
+
+
 	backgroundFar = game.add.group();
 	stageData.objects.cosmetic.backgroundFar.forEach((c) => {
 		var lastRight = c.position.x;
@@ -145,13 +160,17 @@ function create(){
 }
 
 function update(){
+	
+	backgroundFar.forEach((b) => {
+		b.updatePosition();
+	})
+
 	game.physics.arcade.collide(player, solids, (p, s) => {
 		p.hitSolid(s);
 	});
 	
 	boxes.forEach((g) => {
 		game.physics.arcade.collide(player, g, (p, b) => {
-				console.log(p);
 			if(isOnTopOf(p, b)){
 				p.hitBox(b, true);
 				b.explode();
@@ -184,6 +203,7 @@ function update(){
 	} else {
 		player.animations.stop();
 	}
+
 }
 
 function render(){
@@ -193,12 +213,5 @@ function render(){
 		// game.debug.body(s);
 	// })
 	game.debug.geom(game.world.flowerText.textBounds);
+    game.debug.cameraInfo(game.camera, 32, 32);
 }
-
-function isOnTopOf(o1, o2){
-	return (o2.body.hitTest(o1.body.left + 1, o1.body.bottom) || o2.body.hitTest(o1.body.right - 1, o1.body.bottom));
-}
-function isUnder(o1, o2){
-	return (o2.body.hitTest(o1.body.left + 1, o1.body.top - 1) || o2.body.hitTest(o1.body.right - 1, o1.body.top - 1));
-}
-

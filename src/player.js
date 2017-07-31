@@ -7,12 +7,17 @@ var Player = function(game, position){
 	this.anchor.setTo(0.5);
 	this.animations.add('walk', null, 15);
 	this.game.physics.arcade.enable(this);
-	console.log(this);
 		
 	this.body.bounce.y = 0.1;
 	this.body.gravity.y = 1700;
 	this.offsetX = 100;
 	this.body.setSize(48,80,8,32);
+
+	this._jumpSpeed = 800;
+	this._boxBounceSpeed = 700;
+	this._boxJumpSpeed = 900;
+	this._boxBounceDownSpeed = 100;
+
 	
 	game.camera.follow(this, Phaser.Camera.FOLLOW_PLATFORMER);
 	game.add.existing(this);
@@ -32,7 +37,7 @@ Player.prototype.update = function(){
 		
 	// vertical movement
 	if(this.onSolid && controls.cursors.up.isDown){
-		this.body.velocity.y = -800;
+		this.body.velocity.y = -this._jumpSpeed;
 	}
 	this.body.velocity.x = this.body.velocity.x / 1.4;
 	
@@ -41,17 +46,18 @@ Player.prototype.update = function(){
 
 Player.prototype.hitSolid = function(obj){
 	if(obj instanceof Solid) {
-		this.onSolid = true;
+		if(isOnTopOf(this, obj))
+			this.onSolid = true;
 	}
 }
 
 Player.prototype.hitBox = function(obj, playerOnTop){
 	if(playerOnTop){
 		if(controls.cursors.up.isDown)
-			this.body.velocity.y = -950;
+			this.body.velocity.y = -this._boxJumpSpeed;
 		else
-			this.body.velocity.y = -700;
+			this.body.velocity.y = -this._boxBounceSpeed;
 	} else {
-		this.body.velocity.y = 100;
+		this.body.velocity.y = this._boxBounceDownSpeed;
 	}
 }
