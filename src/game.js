@@ -42,11 +42,12 @@ function create(){
 	bmd.addToWorld();
 	for(var i = 0; i < 30; i++){
 		var c = Phaser.Color.interpolateColor(0x8cbdff, 0xffee82, 30, i);
-		bmd.rect(0,game.world.height*3/4 /30 * i,game.world.width, game.world.height*3/4/30, Phaser.Color.getWebRGB(c));
+		bmd.rect(0,game.world.height*3/4 /30 * i,game.world.width, game.world.height*3/4/30 +1, Phaser.Color.getWebRGB(c));
 	}
 	for(var i = 0; i < 30; i++){
 		var c = Phaser.Color.interpolateColor(0xffee82, 0xffbb47, 30, i);
-		bmd.rect(0,3*game.world.height / 4 + game.world.height/2 /30 * i,game.world.width, game.world.height/2 /30, Phaser.Color.getWebRGB(c));
+		bmd.rect(0,3*game.world.height / 4 + game.world.height/2 /30 * i,game.world.width,
+			game.world.height/2 /30, Phaser.Color.getWebRGB(c));
 	}
 	var textStyle = { font: "24px Arial", fill: "#000000", align: "left" };
 	game.world.flowerText = game.add.text(15, 15, "Flowers: " +game.world.flowerCount, textStyle);
@@ -81,7 +82,7 @@ function create(){
 			var body = group.body;
 			if(!body)
 				body = s.body;
-			solids.add(new Solid(game, {x: s.position.x * stageData.tilesize, y: s.position.y * stageData.tilesize}, img, body));
+			solids.add(new Solid(game, s.x * stageData.tilesize, s.y * stageData.tilesize, img, body));
 		});
 	});
 		
@@ -94,53 +95,26 @@ function create(){
 	}
 	
 	boxes = game.add.group();
-	
 	basicBoxes = game.add.group();
-	basicBoxes.enableBody = true;
 	stageData.objects.boxes.basic.items.forEach((b) => {
-		var box = basicBoxes.create(b.position.x, b.position.y, stageData.objects.boxes.basic.image);
-		box.body.immovable = true;
-		box.createContent = function(x, y){
-				flowers.createOne(x + (-15 + game.rnd.frac() * 30), y)
-		};
+		basicBoxes.add(new Box(game, {x: b.x * stageData.tilesize, y: b.y * stageData.tilesize}));
 	});
 	boxes.add(basicBoxes);
 	
 	supriseBoxes = game.add.group();
 	supriseBoxes.enableBody = true;
 	stageData.objects.boxes.suprise.items.forEach((b) => {
-		var box = supriseBoxes.create(b.position.x, b.position.y, stageData.objects.boxes.suprise.image);
-		box.body.immovable = true;
-		box.createContent = function(x, y) {
-			for(var i = 0; i < 6; i++){
-				flowers.createOne(x + (-15 + game.rnd.frac() * 30), y);
-			}
-		}
+		var box = supriseBoxes.add(new SupriseBox(game, {x: b.x * stageData.tilesize, y: b.position.y * stageData.tilesize}));
 	})
 	boxes.add(supriseBoxes);
 	
-	boxes.children.forEach((group) => {
-		group.children.forEach((b) => {
-			b.body.immovable = true;
-			b.body.setSize(64,56,0,8);
-			b.explode = function(){
-				this.body.destroy();
-				this.visible = false;
-				b.emitter = game.add.emitter(b.centerX, b.centerY, 20);
-				b.emitter.makeParticles('boxshread');
-				b.emitter.gravity = 200;
-				b.emitter.start(true, 500, 100, 10)
-				b.createContent(b.centerX, b.centerY);
-			}
-		});
-	});
-	
+
 	/* PLAYER */
-	player = new Player(game, stageData.objects.player.position);
+	player = new Player(game, stageData.objects.player.x, stageData.objects.player.y);
 	
 	/* COSMETIC FOREGROUND */
 	stageData.objects.cosmetic.foreground.forEach((c) => {
-		var s = game.add.sprite(c.position.x, c.position.y, c.image);
+		var s = game.add.sprite(c.x, c.y, c.image);
 		if(c.scale){
 			s.scale.setTo(c.scale.x, c.scale.y); 
 		}
@@ -200,10 +174,11 @@ function render(){
 		// game.debug.body(s);
 	// })
 	if(debug){
-		var row = Math.floor(game.input.mousePointer.x / game.world.tilesize);
-		var col = Math.floor(game.input.mousePointer.y / game.world.tilesize);
-		debug.tileHighlighter.x = row * game.world.tilesize;
-		debug.tileHighlighter.y = col * game.world.tilesize;
+		var col = Math.floor((game.input.mousePointer.x + game.camera.position.x) / game.world.tilesize);
+		var row = Math.floor((game.input.mousePointer.y + game.camera.position.y) / game.world.tilesize);
+		debug.tileHighlighter.x = col * game.world.tilesize;
+		debug.tileHighlighter.y = row * game.world.tilesize;
 		game.debug.geom(debug.tileHighlighter, "#ff0000");
+		game.debug.text("row: "+ row + " col: "+col, 500, 16);
 	}
 }

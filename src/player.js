@@ -1,5 +1,5 @@
-var Player = function(game, position){
-	Phaser.Sprite.call(this, game, position.x, position.y, 'hedgehog_standart_walking');
+var Player = function(game, x, y){
+	Phaser.Sprite.call(this, game, x, y, 'hedgehog_standart_walking');
 	this.facingRight = true;
 	this.onSolid = false;
 	this.spinInProgress = false;
@@ -33,6 +33,14 @@ Player.prototype.update = function(){
 		this.body.acceleration.x = -6000;
 	} else if(controls.cursors.right.isDown && !controls.cursors.left.isDown){
 		this.body.acceleration.x = 6000;
+	}
+	
+	if(debug.fast){
+		if(controls.cursors.left.isDown && !controls.cursors.right.isDown){
+			this.body.acceleration.x = -30000;
+		} else if(controls.cursors.right.isDown && !controls.cursors.left.isDown){
+			this.body.acceleration.x = 30000;
+		}
 	}
 		
 	// vertical movement

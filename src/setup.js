@@ -6,6 +6,7 @@ var background;
 var controls = {};
 var backgroundFar;
 var debug = {};
+debug.fast = false;
 
 
 
