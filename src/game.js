@@ -1,17 +1,17 @@
 
-var game = new Phaser.Game(1200,800, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
+var game = new Phaser.Game(1200,768, Phaser.Auto, '', {preload: preload, create: create, update: update, render: render}, true, true);
 
 function preload(){
-	game.load.tilemap('background', 'assets/sprites/background.png');
-	game.load.tilemap('background_forest', 'assets/sprites/background_forest.png');
-	game.load.tilemap('background_grass', 'assets/sprites/background_grass.png');
+	game.load.image('background', 'assets/sprites/background.png');
+	game.load.image('background_forest', 'assets/sprites/background_forest.png');
+	game.load.image('background_grass', 'assets/sprites/background_grass.png');
 	game.load.image('box', 'assets/sprites/box.png');
 	game.load.image('box_suprise', 'assets/sprites/box_suprise.png');
 	game.load.image('hedgehog_tie', 'assets/images/hedgehog/hedgehog_tie.png');
 	game.load.image('platform_mossy', 'assets/sprites/platform_mossy.png');
 	game.load.image('boxshread', 'assets/sprites/boxshread.png');
 	game.load.image('flower', 'assets/sprites/flower.png');
-	game.load.image('grass_ground_1', 'assets/sprites/grass_ground_1.png');
+	game.load.image('grass_floor_1', 'assets/sprites/grass_floor_1.png');
 	game.load.image('birch_tree_trunk', 'assets/sprites/birch_tree_trunk.png');
 	game.load.image('mushroom_tatti_1', 'assets/sprites/mushroom_tatti_1.png');
 	game.load.image('mushroom_tatti_2', 'assets/sprites/mushroom_tatti_2.png');
@@ -20,18 +20,22 @@ function preload(){
 	game.load.audio('flower', 'assets/audio/flower.mp3');
 	
 	game.load.spritesheet('hedgehog_standart_walking', 'assets/sprites/hedgehog_standart_walking.png', 64, 128, 8);
-	game.load.json('grass_1', 'worlds/world_1.json');
+	game.load.json('world_1', 'worlds/world_1.json');
 }
 
 function create(){
-
 	controls.cursors = game.input.keyboard.createCursorKeys();
 	controls.spin = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+	controls.mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
 	
-	var stageData = game.cache.getJSON('grass_1');
-	game.world.setBounds(0,0,stageData.size.width,stageData.size.height);
+	var stageData = game.cache.getJSON('world_1');
+	game.world.setBounds(0,0,stageData.size.width * stageData.tilesize, stageData.size.height * stageData.tilesize);
 	game.world.flowerCount = 0;
-	
+	game.world.tilesize = stageData.tilesize;
+
+	if(debug)
+		debug.tileHighlighter = new Phaser.Rectangle(0, 0, stageData.tilesize, stageData.tilesize);
+	console.log(debug);
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	
 	var bmd = game.add.bitmapData(game.world.width, game.world.height);
@@ -48,27 +52,11 @@ function create(){
 	game.world.flowerText = game.add.text(15, 15, "Flowers: " +game.world.flowerCount, textStyle);
 	game.world.flowerText.fixedToCamera = true;
 	
-	/* CREATE OBJECTS FROM TILESET */
-	stageData.layers.forEach((layer) => {
-		var i = 0;
-		for(var row = layer.y; row < layer.height; row++) {
-			for(var col = layer.x; col < layer.width; col++) {
-				stageData.objectIds.forEach((o) => {
-					if(o.id === layer.data[i]){
-						
-					}
-					
-				});
-			}
-		}
-	})
-
-
 	backgroundFar = game.add.group();
 	stageData.objects.cosmetic.backgroundFar.forEach((c) => {
-		var lastRight = c.position.x;
+		var lastRight = c.position.x * stageData.tilesize;
 		do {
-			var b = new BackgroundFar(game, {x: lastRight, y:c.position.y}, c.image, c.scale, c.speed);
+			var b = new BackgroundFar(game, {x: lastRight, y:c.position.y * stageData.tilesize}, c.image, c.scale, c.speed);
 			backgroundFar.add(b);
 			lastRight = b.right - 1;
 		} while(b.right < game.world.width && c.repeat);
@@ -76,7 +64,7 @@ function create(){
 	
 	
 	stageData.objects.cosmetic.background.forEach((c) => {
-		var s = game.add.sprite(c.position.x, c.position.y, c.image);
+		var s = game.add.sprite(c.position.x * stageData.tilesize, c.position.y * stageData.tilesize, c.image);
 		if(c.scale){
 			s.scale.setTo(c.scale.x, c.scale.y); 
 		}
@@ -93,7 +81,7 @@ function create(){
 			var body = group.body;
 			if(!body)
 				body = s.body;
-			solids.add(new Solid(game, s.position, img, body));
+			solids.add(new Solid(game, {x: s.position.x * stageData.tilesize, y: s.position.y * stageData.tilesize}, img, body));
 		});
 	});
 		
@@ -160,7 +148,6 @@ function create(){
 }
 
 function update(){
-	
 	backgroundFar.forEach((b) => {
 		b.updatePosition();
 	})
@@ -212,6 +199,11 @@ function render(){
 	// solids.forEach((s) => {
 		// game.debug.body(s);
 	// })
-	game.debug.geom(game.world.flowerText.textBounds);
-    game.debug.cameraInfo(game.camera, 32, 32);
+	if(debug){
+		var row = Math.floor(game.input.mousePointer.x / game.world.tilesize);
+		var col = Math.floor(game.input.mousePointer.y / game.world.tilesize);
+		debug.tileHighlighter.x = row * game.world.tilesize;
+		debug.tileHighlighter.y = col * game.world.tilesize;
+		game.debug.geom(debug.tileHighlighter, "#ff0000");
+	}
 }

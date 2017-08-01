@@ -3,7 +3,7 @@
 	"tilesize": 16,
 	"size": {
 		"width": 500,
-		"height": 48
+		"height": 40
 	},
 	"objects": {
 		"cosmetic": {
@@ -11,7 +11,7 @@
 				{
 					"image": "background",
 					"position": {
-						"x": -2,
+						"x": 0,
 						"y": 0
 					},
 					"scale": {
@@ -24,7 +24,7 @@
 					"image": "background_forest",
 					"position": {
 						"x": 0,
-						"y": 5
+						"y": 40
 					},
 					"scale": {
 						"x": 1,
@@ -36,7 +36,7 @@
 					"image": "background_grass",
 					"position": {
 						"x": 0,
-						"y": 3
+						"y": 0
 					},
 					"scale": {
 						"x": 1,
@@ -48,93 +48,88 @@
 				}
 			],
 			"background": [
-
+				{
+					"image": "birch_tree_trunk",
+					"position": {
+						"x": 2100,
+						"y": 0
+					},
+					"scale": {
+						"x": 0.8,
+						"y": 0.8
+					}
+				}
 			],
 			"foreground": [
-
+				{
+					"image": "birch_tree_trunk",
+					"position": {
+						"x":2500,
+						"y": 20
+					},
+					"scale": {
+						"x":0.8,
+						"y":0.8
+					}
+				},
+				{
+					"image": "flower_1",
+					"position": {
+						"x":1980,
+						"y":400
+					}
+				},
+				{
+					"image": "mushroom_tatti_1",
+					"position": {
+						"x":1680,
+						"y":610
+					},
+					"scale": {
+						"x":0.15,
+						"y":0.15
+					}
+				},
+				{
+					"image": "mushroom_tatti_2",
+					"position": {
+						"x":1820,
+						"y":615
+					},
+					"scale": {
+						"x":0.15,
+						"y":0.15
+					}
+				}
 			]
 
 		},
 		"solids": [{
-				"name": "grass_ground",
-				"image": "grass_floor_1",
-				"body": {
-					"x": 0,
-					"y": 12,
-					"width": 64,
-					"height":214 
-				},
+				"name": "Ground",
 				"items": [
 					{
+						"image": "grass_ground_1",
+						"body": {
+							"x": 26,
+							"y": 100,
+							"width": 1990,
+							"height": 1000
+						},
 						"position": {
-							"x": 0,
-							"y": 38
+							"x": 1500,
+							"y": 600
 						}
-					},
-					{
+					},{
+						"image": "grass_ground_1",
+						"body": {
+							"x": 26,
+							"y": 100,
+							"width": 1990,
+							"height": 1000
+						},
 						"position": {
-							"x": 4,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 8,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 12,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 16,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 20,
-							"y": 38
-						}
-					},
-										{
-						"position": {
-							"x": 24,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 28,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 32,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 36,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 40,
-							"y": 38
-						}
-					},
-					{
-						"position": {
-							"x": 44,
-							"y": 38
+							"x": 3400,
+							"y": 600
 						}
 					}
 				]
@@ -147,7 +142,22 @@
 					"width": 256,
 					"height": 40
 				},
-				"items": [
+				"items": [{
+						"position": {
+							"x": 12,
+							"y": 612
+						}
+					}, {
+						"position": {
+							"x": 712,
+							"y": 500
+						}
+					}, {
+						"position": {
+							"x": 1100,
+							"y": 500
+						}
+					}
 				]
 			}
 		],

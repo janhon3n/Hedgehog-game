@@ -5,6 +5,7 @@ var flowers;
 var background;
 var controls = {};
 var backgroundFar;
+var debug = {};
 
 
 
