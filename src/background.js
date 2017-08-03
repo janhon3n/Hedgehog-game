@@ -1,5 +1,5 @@
-var BackgroundFar = function(game, position, image, scale, speed){
-    Phaser.Sprite.call(this, game, position.x, position.y, image);
+var BackgroundFar = function(game, x, y, width, height, image, scale, speed){
+    Phaser.TileSprite.call(this, game, x, y, width, height, image);
     if(scale) this.scale.setTo(scale.x, scale.y);
     if(speed == undefined || speed == 1) {
         this.moveSpeed = 1;
@@ -7,10 +7,11 @@ var BackgroundFar = function(game, position, image, scale, speed){
         this.moveSpeed = speed;
     }
     this.originalX = this.position.x;
+    console.log(this);
 	game.add.existing(this);
 }
 
-BackgroundFar.prototype = Object.create(Phaser.Sprite.prototype);
+BackgroundFar.prototype = Object.create(Phaser.TileSprite.prototype);
 BackgroundFar.prototype.constructor = BackgroundFar;
 
 BackgroundFar.prototype.updatePosition = function(){

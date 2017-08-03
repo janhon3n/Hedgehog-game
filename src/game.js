@@ -57,18 +57,21 @@ function create(){
 	stageData.objects.cosmetic.backgroundFar.forEach((c) => {
 		var lastRight = c.position.x * stageData.tilesize;
 		do {
-			var b = new BackgroundFar(game, {x: lastRight, y:c.position.y * stageData.tilesize}, c.image, c.scale, c.speed);
+			var b = new BackgroundFar(game, lastRight, c.position.y * stageData.tilesize, c.size.width, c.size.height, c.image, c.scale, c.speed);
 			backgroundFar.add(b);
 			lastRight = b.right - 1;
 		} while(b.right < game.world.width && c.repeat);
 	})
 	
 	
-	stageData.objects.cosmetic.background.forEach((c) => {
-		var s = game.add.sprite(c.position.x * stageData.tilesize, c.position.y * stageData.tilesize, c.image);
-		if(c.scale){
-			s.scale.setTo(c.scale.x, c.scale.y); 
-		}
+	stageData.objects.cosmetic.background.forEach((g) => {
+		console.log(g);
+		g.items.forEach((i) => {
+			var img = game.add.image(i.x * stageData.tilesize, i.y * stageData.tilesize, g.image);
+			if(g.scale){
+				img.scale.setTo(g.scale.x, g.scale.y);
+			}
+		})
 	})
 	
 
@@ -113,11 +116,14 @@ function create(){
 	player = new Player(game, stageData.objects.player.x, stageData.objects.player.y);
 	
 	/* COSMETIC FOREGROUND */
-	stageData.objects.cosmetic.foreground.forEach((c) => {
-		var s = game.add.sprite(c.x, c.y, c.image);
-		if(c.scale){
-			s.scale.setTo(c.scale.x, c.scale.y); 
-		}
+	stageData.objects.cosmetic.foreground.forEach((g) => {
+		console.log(g);
+		g.items.forEach((i) => {
+			var img = game.add.image(i.x * stageData.tilesize, i.y * stageData.tilesize, g.image);
+			if(g.scale){
+				img.scale.setTo(g.scale.x, g.scale.y);
+			}
+		})
 	})
 }
 
